@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="app">
+		<div class="side-box notranslate">
+			<div class="feedinfos-box">
+				<div class="feedinfo-box" v-for="feedInfo in feedInfos" 
+				:key="feedInfo.id" :data-id="feedInfo.id"
+				:data-active="feed && feed.id === feedInfo.id"
+				@click="setFeed(feedInfo)">
+					<div class="feedinfo-id">{{feedInfo.id}}</div>
+					<h2>{{feedInfo.title}}</h2>
+					<div>
+						<a>{{feedInfo.link}}</a>
+					</div>
+					<p>{{feedInfo.description}}</p>
+					<div>
+						{{feedInfo.modified}}
+					</div>
+				</div>
+				<!-- <pre>{{feedInfos}}</pre> -->
+			</div>
+		</div>
+		<div class="side-box notranslate">
+			<div class="site-box" v-if="feed">
+				<!-- <div class="site-head-box">
+					<h1>{{feed.title}}</h1>
+					<div class="feed-info-box">
+						<a class="feed-link">{{feed.link}}</a>
+					</div>
+					<div class="site-description">{{feed.description}}</div>
+				</div> -->
+				<div class="items-box">
+					<article class="item" v-for="item in feed.items" @click="setCurrentItem(item)" 
+						:data-id="item.id" :key="item.id"
+						:data-active="currentItem && currentItem.id === item.id">
+						<div class="item-cover-box" v-if="item.cover">
+							<img class="item-cover" :src="item.cover" :alt="item.title">
+						</div>
+						<div class="item-content-box">
+							<h2>{{item.title}}</h2>
+							<div class="info-box">
+								<b class="category">{{item.creator}}</b>
+								<!-- <div class="date">{{item.date}}</div> -->
+								<span class="isoDate">{{item.isoDate}}</span>
+							</div>
+							<div class="content">{{itemContentSnippet(item)}}</div>
+							<!-- <div class="content" v-html="item['content:encoded']"></div> -->
+							<div class="categories-box" v-if="item.categories">
+							<span class="category-item" v-for="category in item.categories">{{category}}</span>
+							</div>
+						</div>
+					</article>
+				</div>
+			</div>
+		</div>
+		<div class="body-box" ref="body-box">
+			<div id="google_translate_element"></div>
+			<div v-if="currentItem">
+				<!-- <iframe class="current-article-iframe" ref="current-article-iframe" :src="currentItem.link" frameborder="0"></iframe> -->
+				<article class="current-article-content-box" @click="onArticleClick($event)">
+					<div class="head">
+						<div class="current-article-link" notranslate>
+							{{currentItem['link']}}
+						</div>
+						<h1>{{currentItem['title']}}</h1>
+					</div>
+					<!-- <base target="_blank"> -->
+					<div class="content" v-html="fixContent(currentItem)"></div>
+					<!-- <base target="_self"> -->
+				</article>
+			</div>
+		</div>
+	</div>
+	<!-- vue 2.6.1 CDN -->
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.1/dist/vue.min.js"></script>
+	<script src="document.js"></script>
+	<!-- <script src="tran.js"></script> -->
+</body>
+</html>
