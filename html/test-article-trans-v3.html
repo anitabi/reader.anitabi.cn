@@ -9,17 +9,6 @@ p{
 	opacity: .5;
 	/* font-size: 0.9em;	 */
 }
-body{
-	display: flex;
-	--article-width: 756px;
-	max-width: calc(var(--article-width) * 1);
-	margin: 0 auto;
-	font-size: 12px;
-}
-article{
-	flex: 1;
-	width: var(--article-width);
-}
 </style>
 <article>
 <div class="head">
@@ -169,17 +158,10 @@ const translateEl = async el=>{
 		group.originLang = originLang;
 
 		const { el } = group;
-		const translatedParagraphEl = document.createElement('p');
-		translatedParagraphEl.innerHTML = group.translatedText;
-		
-		translatedParagraphEl.className = 'translated-paragragh';
 
-		translatedParagraphEl.lang = lang;
+		el.lang = lang;
+		el.innerHTML = group.translatedText;
 
-		// 放在原来的 p 标签后面
-		el.after(translatedParagraphEl);
-		
-			// node.data = node.translatedText;
 	});
 
 	console.log(groups);

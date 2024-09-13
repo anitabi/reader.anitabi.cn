@@ -1,36 +1,4 @@
-<html lang="ja">
-<style>
-p{
-	padding: 0.15em 0;
-	margin: 0;
-	line-height: 1.2;
-}
-.translated-paragragh{
-	opacity: .5;
-	/* font-size: 0.9em;	 */
-}
-body{
-	display: flex;
-	--article-width: 756px;
-	max-width: calc(var(--article-width) * 1);
-	margin: 0 auto;
-	font-size: 12px;
-}
-article{
-	flex: 1;
-	width: var(--article-width);
-}
-</style>
-<article>
-<div class="head">
-	<div class="current-article-link">
-		http://tsurebashi.blog123.fc2.com/blog-entry-529.html
-	</div>
-	<h1>『ぽんのみち』 舞台探訪（聖地巡礼） ～広島県尾道市～</h1>
-</div>
-<div class="content"></div>
-</article>
-<script>
+
 const pTags = [
 	'P',
 ]
@@ -89,7 +57,7 @@ function convertToParagraphs(htmlContent) {
 				continue;
 			} 
 			else if (breakTags.includes(child.tagName)) { // 换行标签
-				console.log(child);
+				// console.log(child);
 
 				createParagraph();
 				continue;
@@ -145,7 +113,7 @@ const genTranslatedTextsByText = text=>{
 }
 
 const genTextsGroupByEl = el=>{
-	return [...el.querySelectorAll('p')].map(el=>{
+	return [...el.querySelectorAll('p,h1,h2,h3,h4')].map(el=>{
 		const text = el.innerHTML.trim();
 		return {
 			el,
@@ -164,37 +132,18 @@ const translateEl = async el=>{
 	const res = await fetchTranslate(texts,lang);
 	if(!res) return;
 	const [ translatedTexts, originLang  ] = res;
+	el.groups = groups;
 	groups.forEach((group,index)=>{
 		group.translatedText = translatedTexts[index];
-		group.originLang = originLang;
+		group.originLang = originLang[index];
 
 		const { el } = group;
-		const translatedParagraphEl = document.createElement('p');
-		translatedParagraphEl.innerHTML = group.translatedText;
-		
-		translatedParagraphEl.className = 'translated-paragragh';
 
-		translatedParagraphEl.lang = lang;
-
-		// 放在原来的 p 标签后面
-		el.after(translatedParagraphEl);
-		
-			// node.data = node.translatedText;
+		el.lang = lang;
+		el.innerHTML = group.translatedText;
 	});
 
 	console.log(groups);
+
+	return groups;
 }
-
-
-fetch('../data/feeds/1aed3671.json').then(r=>r.json()).then(feed=>{
-	const item = feed.items[0];
-	const content = convertToParagraphs(item['content:encoded']);
-
-
-	const contentEl = document.querySelector('.content');
-	contentEl.innerHTML = content;
-
-	translateEl(contentEl);
-});
-
-</script>

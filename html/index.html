@@ -9,6 +9,13 @@
 <body>
 	<div class="app">
 		<div class="side-box notranslate">
+			<header>
+				<h1>聖地巡礼 Blog Feeds</h1>
+				<form>
+					<input type="text" v-model="keyword" placeholder="Search">
+					<button type="submit">Search</button>
+				</form>
+			</header>
 			<div class="feedinfos-box">
 				<div class="feedinfo-box" v-for="feedInfo in feedInfos" 
 				:key="feedInfo.id" :data-id="feedInfo.id"
@@ -19,10 +26,10 @@
 					<div>
 						<a>{{feedInfo.link}}</a>
 					</div>
-					<p>{{feedInfo.description}}</p>
+					<!-- <p>{{feedInfo.description}}</p>
 					<div>
 						{{feedInfo.modified}}
-					</div>
+					</div> -->
 				</div>
 				<!-- <pre>{{feedInfos}}</pre> -->
 			</div>
@@ -61,25 +68,14 @@
 			</div>
 		</div>
 		<div class="body-box" ref="body-box">
-			<div id="google_translate_element"></div>
-			<div v-if="currentItem">
-				<!-- <iframe class="current-article-iframe" ref="current-article-iframe" :src="currentItem.link" frameborder="0"></iframe> -->
-				<article class="current-article-content-box" @click="onArticleClick($event)">
-					<div class="head">
-						<div class="current-article-link" notranslate>
-							{{currentItem['link']}}
-						</div>
-						<h1>{{currentItem['title']}}</h1>
-					</div>
-					<!-- <base target="_blank"> -->
-					<div class="content" v-html="fixContent(currentItem)"></div>
-					<!-- <base target="_self"> -->
-				</article>
-			</div>
+			<!-- <div id="google_translate_element"></div> -->
+			<content-box :current-item="currentItem" :key="currentItem" />
 		</div>
 	</div>
 	<!-- vue 2.6.1 CDN -->
-	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.1/dist/vue.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
+	<!-- <script src="/vue.2.6.11.min.js"></script> -->
+	<script src="translate.js"></script>
 	<script src="document.js"></script>
 	<!-- <script src="tran.js"></script> -->
 </body>

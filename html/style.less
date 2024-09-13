@@ -1,10 +1,11 @@
 html{
-	font-size: 14px;
+	font-size: 12px;
 	line-height: 1.2;
 }
 
 body{
 	margin: 0;
+	overflow: hidden;
 }
 
 h1,h2,h3,h4,h5{
@@ -21,7 +22,7 @@ a{
 	text-decoration: none;
 }
 .app{
-	--side-width: 460px;
+	--side-width: 400px;
 	--app-margin: 0px; 
 	--app-height: calc(100vh - var(--app-margin) * 2);
 	margin: var(--app-margin);
@@ -33,7 +34,7 @@ a{
 	.side-box,
 	.body-box{
 		height: 100%;
-		overflow-y: auto;
+		overflow-y: scroll;
 		// 滚动条平滑滚动
 		scroll-behavior: smooth;
 
@@ -48,6 +49,17 @@ a{
 	}
 	.body-box{
 		width: calc(100% - var(--side-width));
+	}
+}
+
+header{
+	padding: 10px;
+	box-shadow: 0 1px 0 0 #000;
+	form{
+		padding-top: 8px;
+		input{
+			width: 220px;
+		}
 	}
 }
 .site-head-box{
@@ -81,9 +93,9 @@ a{
 
 		}
 		h2{
-			font-size: 16px;
-			line-height: 18px;
-			padding: 4px 0;
+			font-size: 14px;
+			line-height: 16px;
+			padding: 2px 0;
 		}
 		.info-box{
 			opacity: 0.5;
@@ -123,6 +135,15 @@ a{
 	}
 }
 
+.current-item-box{
+	&[data-loading="true"]{
+		cursor: wait;
+		& > *{
+			pointer-events: none;
+		}
+	}
+}
+
 
 .feedinfos-box{
 	.feedinfo-box{
@@ -141,9 +162,14 @@ a{
 			font-size: 12px;
 		}
 		h2{
-			font-size: 16px;
-			line-height: 18px;
-			padding: 4px 0;
+			font-size: 14px;
+			line-height: 16px;
+			padding: 2px 0;
+
+			// 单行省略
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 		.info-box{
 			opacity: 0.5;
@@ -162,9 +188,11 @@ a{
 	}
 }
 
+.translate-box{
+	padding: 10px 10px 0;
+}
 .current-article-content-box{
 	padding: 10px;
-	font-size: 16px;
 	line-height: 1.5;
 	.head{
 		padding-bottom: 10px;
@@ -183,12 +211,12 @@ a{
 	}
 	img{
 		max-width: 100%;
-		max-height: 800px;
-		background: #F8F8F8;
+		// max-height: 600px;
 		cursor: pointer;
 		border-radius: 2px;
 		margin: 4px 0;
-		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		// background: #F8F8F8;
+		// box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 	}
 	figure{
 		margin: 0;

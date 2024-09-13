@@ -19,7 +19,7 @@ const fixContent = (item) => {
 		return match.replace(/width="[^"]+?"/,'').replace(/height="[^"]+?"/,'').replace(/<img /,'<img loading="lazy" ');
 	});
 
-	return content;
+	return convertToParagraphs(`<h1>${item['title']}</h1>` + content);
 }
 
 
@@ -61,37 +61,37 @@ const fixFeed = (feed) => {
 	return feed;
 }
 
-const v = new Vue({
-	el: '.app',
-	data: {
-		feedInfos: [],
-		feed: null,
-		currentItem: null,
+
+
+
+Vue.component('content-box', {
+	template: `<div class="current-item-box" v-if="currentItem" :data-loading="loading">
+		<!-- <iframe class="current-article-iframe" ref="current-article-iframe" :src="currentItem.link" frameborder="0"></iframe> -->
+		<div class="translate-box">
+			<button @click="contentTranslateTo('zh-CN')" v-if="!groups">{{ loading ? '翻译中…' : '翻译成简体中文' }}</button>
+			<button @click="contentOrigin()" v-if="groups">显示原文</button>
+		</div>
+		<article class="current-article-content-box" @click="onArticleClick($event)">
+			<div class="head">
+				<div class="current-article-link" notranslate>
+					{{currentItem['link']}}
+				</div>
+			</div>
+			<!-- <base target="_blank"> -->
+			<div class="content" v-html="fixContent(currentItem)"></div>
+			<!-- <base target="_self"> -->
+		</article>
+	</div>`,
+	data(){
+		return {
+			groups: null,
+			loading: false,
+		};
 	},
-	methods:{
-		fixContent,
-		itemContentSnippet,
-		getArticleScrollTop(){
-			const bodyBox = this.$refs['body-box'];
-			return bodyBox.scrollTop;
-		},
-		setArticleScrollTop(v){
-			const bodyBox = this.$refs['body-box'];
-			bodyBox.scrollTop = v;
-		},
-		setCurrentItem(item){
-			this.currentItem = item;
-			this.setArticleScrollTop(0);
-		},
-		setFeed(feedInfo){
-			this.currentItem = null;
-			fetch(`../data/feeds/${feedInfo.id}.json`).then(res => res.json()).then(feed => {
-				v.feed = fixFeed(feed);
-				if(feed.items.length){
-					this.setCurrentItem(feed.items[0]);
-				}
-			});
-		},
+	props: {
+		currentItem: Object,
+	},
+	methods: {
 		onArticleClick(e){
 			const { target } = e;
 
@@ -144,7 +144,56 @@ const v = new Vue({
 					document.documentElement.style.overflow = '';
 				});
 			}
+		},
+		fixContent,
+		itemContentSnippet,
+		async contentTranslateTo(lang){
+			this.loading = true;
+			const articleEl = this.$el.querySelector('.content');
+			this.groups = await translateEl(articleEl,lang);
+			this.loading = false;
+		},
+		contentOrigin(){
+			this.groups.forEach(group => {
+				group.el.innerHTML = group.text;
+				group.el.lang = group.originLang;
+			});
+			this.groups = null;
 		}
+	}
+});
+
+const v = new Vue({
+	el: '.app',
+	data: {
+		feedInfos: [],
+		feed: null,
+		currentItem: null,
+		keyword: '',
+	},
+	methods:{
+		itemContentSnippet,
+		getArticleScrollTop(){
+			const bodyBox = this.$refs['body-box'];
+			return bodyBox.scrollTop;
+		},
+		setArticleScrollTop(v){
+			const bodyBox = this.$refs['body-box'];
+			bodyBox.scrollTop = v;
+		},
+		setCurrentItem(item){
+			this.currentItem = item;
+			this.setArticleScrollTop(0);
+		},
+		setFeed(feedInfo){
+			this.currentItem = null;
+			fetch(`../data/feeds/${feedInfo.id}.json`).then(res => res.json()).then(feed => {
+				v.feed = fixFeed(feed);
+				if(feed.items.length){
+					this.setCurrentItem(feed.items[0]);
+				}
+			});
+		},
 	}
 });
 

@@ -1,0 +1,71 @@
+<html lang="ja">
+<style>
+p{
+	padding: 0.2em 0;
+	margin: 0;
+	line-height: 1.2;
+	box-sizing: border-box;
+}
+.translated-paragragh{
+	opacity: .5;
+	/* font-size: 0.9em;	 */
+}
+body{
+	display: flex;
+	--article-width: 756px;
+	max-width: calc(var(--article-width) * 2);
+	margin: 0 auto;
+	font-size: 12px;
+}
+article{
+	flex: 1;
+	width: var(--article-width);
+}
+</style>
+<article>
+<div class="head">
+	<div class="current-article-link">
+		http://tsurebashi.blog123.fc2.com/blog-entry-529.html
+	</div>
+	<h1>『ぽんのみち』 舞台探訪（聖地巡礼） ～広島県尾道市～</h1>
+</div>
+<div class="content"></div>
+</article>
+<script src="translate.js"></script>
+<script>
+
+fetch('../data/feeds/1aed3671.json').then(r=>r.json()).then(feed=>{
+	const item = feed.items[0];
+	const content = convertToParagraphs(item['content:encoded']);
+
+
+	const contentEl = document.querySelector('.content');
+	contentEl.innerHTML = content;
+
+	const articleEl = document.querySelector('article');
+	const originArticleEl = articleEl.cloneNode(true);
+
+	articleEl.before(originArticleEl);
+
+	translateEl(contentEl);
+
+	const article1Paragraphs = [...contentEl.querySelectorAll('p')];
+	const article2Paragraphs = [...originArticleEl.querySelectorAll('p')];
+
+	const fixHeight = ()=>{
+		article1Paragraphs.forEach((p1,index)=>{
+			const p2 = article2Paragraphs[index];
+
+			const maxHeight = Math.max(p1.clientHeight,p2.clientHeight);
+			p1.style.height = `${maxHeight}px`;
+			p2.style.height = `${maxHeight}px`;
+			
+		});
+	};
+	// 统一p标签的高度
+	setTimeout(fixHeight(),1000);
+	setTimeout(fixHeight(),2000);
+	setTimeout(fixHeight(),5000);
+});
+
+</script>
