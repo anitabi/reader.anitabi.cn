@@ -10,10 +10,13 @@
 	<div class="app">
 		<div class="side-box notranslate">
 			<header>
-				<h1>聖地巡礼阅读器</h1>
+				<div class="df">
+					<h1>聖地巡礼阅读器</h1>
+					<button>添加订阅</button>
+				</div>
 				<form @submit.prevent>
 					<input type="text" v-model="keyword" placeholder="Search">
-					<button type="submit">Search</button>
+					<!-- <button type="submit">Search</button> -->
 				</form>
 			</header>
 			<div class="feedinfos-box">

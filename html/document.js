@@ -70,6 +70,7 @@ Vue.component('content-box', {
 		<div class="translate-box">
 			<button @click="contentTranslateTo('zh-CN')" v-if="!groups">{{ loading ? '翻译中…' : '翻译成简体中文' }}</button>
 			<button @click="contentOrigin()" v-if="groups">显示原文</button>
+			<button @click="fav()">收藏文章</button>
 		</div>
 		<article class="current-article-content-box" @click="onArticleClick($event)">
 			<div class="head">
