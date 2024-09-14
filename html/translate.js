@@ -2,13 +2,18 @@
 const pTags = [
 	'P',
 ]
-const blockTags = [
+
+const singleBlockTags = [
+	'H1',
+	'H2',
 	'H3',
-	'P',
-	'DIV',
 	'H4',
 	'H5',
 	'H6',
+];
+const blockTags = [
+	'P',
+	'DIV',
 	'UL',
 	'OL',
 	'LI',
@@ -56,6 +61,10 @@ function convertToParagraphs(htmlContent) {
 				createParagraph();
 				continue;
 			} 
+			else if (singleBlockTags.includes(child.tagName)) { // 单独的块级标签
+				currentParagraph.appendChild(child);
+				createParagraph();
+			}
 			else if (breakTags.includes(child.tagName)) { // 换行标签
 				// console.log(child);
 
@@ -112,8 +121,10 @@ const genTranslatedTextsByText = text=>{
 	return text.match(/<a[^>]*>[^<]*<\/a>/g).map(str=>str.replace(/<a[^>]*>/,'').replace(/<\/a>/,''));
 }
 
+const translateSelector = `p,h1,h2,h3,h4`;
+
 const genTextsGroupByEl = el=>{
-	return [...el.querySelectorAll('p,h1,h2,h3,h4')].map(el=>{
+	return [...el.querySelectorAll(translateSelector)].map(el=>{
 		const text = el.innerHTML.trim();
 		return {
 			el,
@@ -121,13 +132,13 @@ const genTextsGroupByEl = el=>{
 		};
 	}).filter(group=>group.el.innerText.trim());
 }
-const translateEl = async el=>{
+
+
+const translateEl = async (el,lang = 'zh-CN')=>{
 	const groups = genTextsGroupByEl(el);
 	console.log(groups);
 
 	const texts = groups.map(group=>group.text);
-
-	const lang = 'zh-CN';
 
 	const res = await fetchTranslate(texts,lang);
 	if(!res) return;
@@ -141,6 +152,7 @@ const translateEl = async el=>{
 
 		el.lang = lang;
 		el.innerHTML = group.translatedText;
+
 	});
 
 	console.log(groups);

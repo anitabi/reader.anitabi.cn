@@ -20,6 +20,12 @@
 				</form>
 			</header>
 			<div class="feedinfos-box">
+				<div class="feedinfo-box">
+					<h2>收藏</h2>
+					<div>
+						favorite
+					</div>
+				</div>
 				<div class="feedinfo-box" v-for="feedInfo in feedInfos" 
 				:key="feedInfo.id" :data-id="feedInfo.id"
 				:data-active="feed && feed.id === feedInfo.id"

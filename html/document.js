@@ -63,12 +63,17 @@ const fixFeed = (feed) => {
 
 
 
+const originTextEl = document.createElement('div');
+originTextEl.className = 'origin-text-box';
+
+
 
 Vue.component('content-box', {
 	template: `<div class="current-item-box" v-if="currentItem" :data-loading="loading">
 		<!-- <iframe class="current-article-iframe" ref="current-article-iframe" :src="currentItem.link" frameborder="0"></iframe> -->
 		<div class="translate-box">
 			<button @click="contentTranslateTo('zh-CN')" v-if="!groups">{{ loading ? '翻译中…' : '翻译成简体中文' }}</button>
+			<button @click="contentTranslateTo('en')" v-if="!groups">{{ loading ? 'Translating...' : 'Translate into English' }}</button>
 			<button @click="contentOrigin()" v-if="groups">显示原文</button>
 			<button @click="fav()">收藏文章</button>
 		</div>
@@ -152,6 +157,23 @@ Vue.component('content-box', {
 			this.loading = true;
 			const articleEl = this.$el.querySelector('.content');
 			this.groups = await translateEl(articleEl,lang);
+
+
+			this.groups.forEach((group,index)=>{
+				const { el } = group;
+				el.addEventListener('mouseenter',()=>{
+					const rect = el.getBoundingClientRect();
+					originTextEl.innerHTML = group.text;
+					originTextEl.style.top = `${rect.top + rect.height}px`;
+					originTextEl.style.left = `${rect.left}px`;
+					document.body.appendChild(originTextEl);
+				});
+				el.addEventListener('mouseleave',()=>{
+					originTextEl.remove();
+				});
+
+			});
+
 			this.loading = false;
 		},
 		contentOrigin(){

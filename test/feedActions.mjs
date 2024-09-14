@@ -30,6 +30,9 @@ export const updateFeedById = (id,feed) => {
 	feed.id = id;
 	
 	const oldFeed = getFeedById(id);
+
+	const oldItemLength = oldFeed ? oldFeed.items.length : 0;
+
 	if(oldFeed){
 		const Items = {};
 		for(const item of oldFeed.items){
@@ -42,6 +45,9 @@ export const updateFeedById = (id,feed) => {
 		feed.items = Object.values(Items);
 	}
 
+	const newItemLength = feed.items.length;
+
+	console.log(`${id} 更新了 ${newItemLength - oldItemLength} 条`);
 
 	return setFeedById(id,feed);
 }
